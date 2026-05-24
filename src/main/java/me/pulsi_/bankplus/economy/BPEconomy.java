@@ -607,7 +607,7 @@ public class BPEconomy {
         bpPlayer.setOpenedBank(bank);
         bpPlayer.setDepositing(true);
 
-        bpPlayer.setClosingTask(Bukkit.getScheduler().runTaskLater(BankPlus.INSTANCE(), () -> {
+        bpPlayer.setClosingTask(me.pulsi_.bankplus.utils.BPScheduler.runTaskLater(p, () -> {
             PlayerChatMethod.reopenBank(bpPlayer, bank.getBankGui());
             BPMessages.sendIdentifier(p, "Chat-Time-Expired");
         }, ConfigValues.getChatExitTime() * 20L));
@@ -629,7 +629,7 @@ public class BPEconomy {
         bpPlayer.setOpenedBank(bank);
         bpPlayer.setWithdrawing(true);
 
-        bpPlayer.setClosingTask(Bukkit.getScheduler().runTaskLater(BankPlus.INSTANCE(), () -> {
+        bpPlayer.setClosingTask(me.pulsi_.bankplus.utils.BPScheduler.runTaskLater(p, () -> {
             PlayerChatMethod.reopenBank(bpPlayer, bank.getBankGui());
             BPMessages.sendIdentifier(p, "Chat-Time-Expired");
         }, ConfigValues.getChatExitTime() * 20L));

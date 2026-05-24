@@ -4,6 +4,7 @@ import me.pulsi_.bankplus.BankPlus;
 import me.pulsi_.bankplus.economy.BPEconomy;
 import me.pulsi_.bankplus.managers.BPTaskManager;
 import me.pulsi_.bankplus.utils.BPLogger;
+import me.pulsi_.bankplus.utils.BPScheduler;
 import me.pulsi_.bankplus.utils.texts.BPMessages;
 import me.pulsi_.bankplus.values.ConfigValues;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ public class BPBankTop {
      * Update the bank top.
      */
     public static void updateBankTop() {
-        Bukkit.getScheduler().runTaskAsynchronously(BankPlus.INSTANCE(), () -> {
+        BPScheduler.runTaskAsynchronously(() -> {
             HashMap<String, BigDecimal> balances = BPEconomy.getAllEconomiesBankBalances();
             List<BankTopPlayer> players = new ArrayList<>();
 
@@ -68,7 +69,7 @@ public class BPBankTop {
      */
     public static void restartBankTopUpdateTask() {
         long delay = ConfigValues.getUpdateBankTopDelay();
-        BPTaskManager.setTask(BPTaskManager.BANKTOP_BROADCAST_TASK, Bukkit.getScheduler().runTaskTimer(BankPlus.INSTANCE(), BPBankTop::updateBankTop, delay, delay));
+        BPTaskManager.setTask(BPTaskManager.BANKTOP_BROADCAST_TASK, BPScheduler.runTaskTimer(BPBankTop::updateBankTop, delay, delay));
     }
 
     /**

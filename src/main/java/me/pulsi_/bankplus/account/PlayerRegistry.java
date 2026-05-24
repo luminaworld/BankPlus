@@ -6,6 +6,7 @@ import me.pulsi_.bankplus.bankSystem.BankRegistry;
 import me.pulsi_.bankplus.economy.BPEconomy;
 import me.pulsi_.bankplus.sql.BPSQL;
 import me.pulsi_.bankplus.utils.BPLogger;
+import me.pulsi_.bankplus.utils.BPScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -67,7 +68,7 @@ public class PlayerRegistry {
             return bpPlayer;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(BankPlus.INSTANCE(), () -> bank.getBankEconomy().loadPlayer(p, wasRegistered));
+        BPScheduler.runTaskAsynchronously(() -> bank.getBankEconomy().loadPlayer(p, wasRegistered));
         players.putIfAbsent(uuid, bpPlayer);
         return bpPlayer;
     }

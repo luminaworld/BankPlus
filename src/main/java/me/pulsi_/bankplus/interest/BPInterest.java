@@ -4,6 +4,7 @@ import me.pulsi_.bankplus.BankPlus;
 import me.pulsi_.bankplus.bankSystem.Bank;
 import me.pulsi_.bankplus.bankSystem.BankUtils;
 import me.pulsi_.bankplus.managers.BPTaskManager;
+import me.pulsi_.bankplus.utils.BPScheduler;
 import me.pulsi_.bankplus.utils.BPUtils;
 import me.pulsi_.bankplus.utils.SavesFile;
 import me.pulsi_.bankplus.values.ConfigValues;
@@ -51,7 +52,7 @@ public class BPInterest {
     public void giveInterest() {
         cooldown = System.currentTimeMillis() + ConfigValues.getInterestDelay();
 
-        Bukkit.getScheduler().runTaskAsynchronously(BankPlus.INSTANCE(), () -> {
+        BPScheduler.runTaskAsynchronously(() -> {
             OnlineInterestMethod onlineInterestMethod = new OnlineInterestMethod();
             OfflineInterestMethod offlineInterestMethod = new OfflineInterestMethod();
 
@@ -86,7 +87,7 @@ public class BPInterest {
     private void loopInterest() {
         if (!isInterestActive()) return;
         if (getInterestCooldownMillis() <= 0) giveInterest();
-        BPTaskManager.setTask(BPTaskManager.INTEREST_TASK, Bukkit.getScheduler().runTaskLater(BankPlus.INSTANCE(), this::loopInterest, 10L));
+        BPTaskManager.setTask(BPTaskManager.INTEREST_TASK, BPScheduler.runTaskLater(this::loopInterest, 10L));
     }
 
     public abstract static class InterestMethod {

@@ -1,9 +1,9 @@
 package me.pulsi_.bankplus.loanSystem;
 
 import me.pulsi_.bankplus.bankSystem.Bank;
+import me.pulsi_.bankplus.utils.BPScheduler;
 import me.pulsi_.bankplus.values.ConfigValues;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.math.BigDecimal;
 
@@ -13,7 +13,7 @@ public class BPLoan {
     private final Bank senderBank, receiverBank, requestedBank;
     private final BigDecimal moneyGiven;
     private BigDecimal moneyToReturn;
-    private BukkitTask task;
+    private BPScheduler.TaskWrapper task;
     private long timeLeft;
     private int instalments, instalmentsPoint;
     private final LoanType loanType;
@@ -120,7 +120,7 @@ public class BPLoan {
         return moneyToReturn;
     }
 
-    public BukkitTask getTask() {
+    public BPScheduler.TaskWrapper getTask() {
         return task;
     }
 
@@ -148,7 +148,7 @@ public class BPLoan {
         this.moneyToReturn = moneyToReturn;
     }
 
-    public void setTask(BukkitTask task) {
+    public void setTask(BPScheduler.TaskWrapper task) {
         this.task = task;
     }
 

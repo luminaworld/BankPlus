@@ -6,6 +6,7 @@ import me.pulsi_.bankplus.managers.BPConfigs;
 import me.pulsi_.bankplus.managers.BPData;
 import me.pulsi_.bankplus.placeholders.BPPlaceholders;
 import me.pulsi_.bankplus.utils.BPLogger;
+import me.pulsi_.bankplus.utils.BPScheduler;
 import me.pulsi_.bankplus.utils.BPVersions;
 import me.pulsi_.bankplus.utils.texts.BPChat;
 import me.pulsi_.bankplus.values.ConfigValues;
@@ -56,7 +57,7 @@ public final class BankPlus extends JavaPlugin {
         if (!setupEconomy()) {
             if (tries < 4) {
                 BPLogger.Console.warn("BankPlus didn't find any economy plugin on this server, the plugin will re-search in 2 seconds. (" + tries + " try)");
-                Bukkit.getScheduler().runTaskLater(this, this::onEnable, 40);
+                BPScheduler.runTaskLater(this::onEnable, 40);
                 tries++;
                 return;
             }
@@ -104,7 +105,7 @@ public final class BankPlus extends JavaPlugin {
         }
 
         if (ConfigValues.isUpdateCheckerEnabled())
-            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> isUpdated = isPluginUpdated(), 0, (8 * 1200) * 60 /*8 hours*/);
+            BPScheduler.runTaskTimerAsynchronously(() -> isUpdated = isPluginUpdated(), 0, (8 * 1200) * 60 /*8 hours*/);
     }
 
     @Override

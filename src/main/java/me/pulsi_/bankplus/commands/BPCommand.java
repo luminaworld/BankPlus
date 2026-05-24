@@ -1,6 +1,7 @@
 package me.pulsi_.bankplus.commands;
 
 import me.pulsi_.bankplus.BankPlus;
+import me.pulsi_.bankplus.utils.BPScheduler;
 import me.pulsi_.bankplus.utils.BPUtils;
 import me.pulsi_.bankplus.utils.texts.BPFormatter;
 import me.pulsi_.bankplus.utils.texts.BPMessages;
@@ -114,7 +115,7 @@ public abstract class BPCommand {
         if (confirmCooldown > 0) {
             String name = s.getName();
             if (!confirm.contains(name)) {
-                Bukkit.getScheduler().runTaskLater(BankPlus.INSTANCE(), () -> confirm.remove(name), confirmCooldown * 20L);
+                BPScheduler.runTaskLater(() -> confirm.remove(name), confirmCooldown * 20L);
                 for (String message : confirmMessage) BPMessages.sendMessage(s, message);
                 confirm.add(name);
                 return false;
@@ -154,7 +155,7 @@ public abstract class BPCommand {
         execution.execute();
         if (cooldown > 0 && !(s instanceof ConsoleCommandSender)) {
             cooldowns.put(s.getName(), System.currentTimeMillis() + (cooldown * 1000L));
-            Bukkit.getScheduler().runTaskLater(BankPlus.INSTANCE(), () -> cooldowns.remove(s.getName()), cooldown * 20L);
+            BPScheduler.runTaskLater(() -> cooldowns.remove(s.getName()), cooldown * 20L);
         }
     }
 

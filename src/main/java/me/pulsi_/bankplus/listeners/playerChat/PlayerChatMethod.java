@@ -12,7 +12,7 @@ import me.pulsi_.bankplus.values.ConfigValues;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
+import me.pulsi_.bankplus.utils.BPScheduler;
 
 import java.math.BigDecimal;
 
@@ -31,7 +31,7 @@ public class PlayerChatMethod {
 
         if (processedThisTick.contains(p.getUniqueId())) return;
         processedThisTick.add(p.getUniqueId());
-        Bukkit.getScheduler().runTask(BankPlus.INSTANCE(), () -> processedThisTick.remove(p.getUniqueId()));
+        BPScheduler.runTask(() -> processedThisTick.remove(p.getUniqueId()));
 
         Bank openedBank = bpPlayer.getOpenedBank();
         if (openedBank == null) {
@@ -77,7 +77,7 @@ public class PlayerChatMethod {
 
         if (processedThisTick.contains(p.getUniqueId())) return;
         processedThisTick.add(p.getUniqueId());
-        Bukkit.getScheduler().runTask(BankPlus.INSTANCE(), () -> processedThisTick.remove(p.getUniqueId()));
+        BPScheduler.runTask(() -> processedThisTick.remove(p.getUniqueId()));
 
         Bank openedBank = bpPlayer.getOpenedBank();
         if (openedBank == null) {
@@ -119,8 +119,8 @@ public class PlayerChatMethod {
     }
 
     public static void reopenBank(BPPlayer bpPlayer, BankGui openedBankGui) {
-        Bukkit.getScheduler().runTask(BankPlus.INSTANCE(), () -> {
-            BukkitTask task = bpPlayer.getClosingTask();
+        BPScheduler.runTask(bpPlayer.getPlayer(), () -> {
+            BPScheduler.TaskWrapper task = bpPlayer.getClosingTask();
             if (task != null) task.cancel();
 
             removeFromTyping(bpPlayer);
@@ -129,7 +129,7 @@ public class PlayerChatMethod {
     }
 
     private static void executeExitCommands(Player p) {
-        Bukkit.getScheduler().runTask(BankPlus.INSTANCE(), () -> {
+        BPScheduler.runTask(p, () -> {
             for (String cmd : ConfigValues.getExitCommands()) {
                 if (cmd.startsWith("[CONSOLE]")) {
                     String s = cmd.replace("[CONSOLE] ", "").replace("%player%", p.getName());
