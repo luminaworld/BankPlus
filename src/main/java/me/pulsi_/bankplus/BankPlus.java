@@ -23,7 +23,7 @@ import java.net.URI;
 
 public final class BankPlus extends JavaPlugin {
 
-    public static final String actualVersion = "6.4";
+    public static String actualVersion;
 
     private static String serverVersion;
     private static BankPlus INSTANCE;
@@ -44,6 +44,7 @@ public final class BankPlus extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
+        actualVersion = getDescription().getVersion();
 
         PluginManager plManager = Bukkit.getPluginManager();
         if (plManager.getPlugin("Vault") == null) {
