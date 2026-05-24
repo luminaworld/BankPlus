@@ -29,6 +29,13 @@ General-Settings:
   # If enabled, to open a bank the player will also need the permission bankplus.open to open it.
   Need-Open-Permission-To-Open: true
 
+  # Choose how BankPlus will save player data.
+  # Available types:
+  #   - YML: Stored in individual .yml files inside the playerdata/ folder.
+  #   - SQLite: Stored in a local database file (data.db).
+  #   - MySQL: Stored in an external MySQL database server (configured below).
+  Save-Playerdata-Type: SQLite
+
   # Settings to enable and manage MySQL
   MySQL:
     # Enabling this option will stop BankPlus from storing data in

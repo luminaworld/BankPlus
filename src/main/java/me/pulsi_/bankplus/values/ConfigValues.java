@@ -35,6 +35,7 @@ public class ConfigValues extends ValueLoader {
     private static String upgradesMaxedPlaceholder, noUpgradeItemsMessage;
     private static String mainGuiName;
     private static String offlineInterestMessage, interestOfflinePermission;
+    private static String savePlayerdataType;
     private static long offlineInterestLimit;
     private static boolean mySqlEnabled, mySqlUsingSSL;
     private static String mySqlHost, mySqlPort, mySqlDatabase, mySqlUsername, mySqlPassword;
@@ -72,6 +73,7 @@ public class ConfigValues extends ValueLoader {
     private static boolean loanCheckEnoughMoney;
     private static BigDecimal loanMaxAmount, loanInterest;
     private static int loanDelay, loanInstalments, loanAcceptTime, loadDelay;
+    private static boolean useFiles;
 
     public static void setupValues() {
         FileConfiguration config = BankPlus.INSTANCE().getConfigs().getConfig("config.yml");
@@ -182,6 +184,8 @@ public class ConfigValues extends ValueLoader {
         loanInstalments = config.getInt("Loan-Settings.Installments");
         loanAcceptTime = config.getInt("Loan-Settings.Accept-Time");
         loanDelay = config.getInt("Loan-Settings.Delay");
+        useFiles = config.getBoolean("General-Settings.Use-Files", false);
+        savePlayerdataType = config.getString("General-Settings.Save-Playerdata-Type", "SQLite").toUpperCase();
     }
 
     public static List<String> getWorldsBlacklist() {
@@ -397,7 +401,7 @@ public class ConfigValues extends ValueLoader {
     }
 
     public static boolean isMySqlEnabled() {
-        return mySqlEnabled;
+        return savePlayerdataType.equals("MYSQL") || mySqlEnabled;
     }
 
     public static boolean isMySqlUsingSSL() {
@@ -466,6 +470,14 @@ public class ConfigValues extends ValueLoader {
 
     public static boolean isOpeningPermissionsNeeded() {
         return openingPermissionsNeeded;
+    }
+
+    public static boolean isUseFiles() {
+        return savePlayerdataType.equals("YML") || useFiles;
+    }
+
+    public static String getSavePlayerdataType() {
+        return savePlayerdataType;
     }
 
     public static boolean isReopeningBankAfterChat() {

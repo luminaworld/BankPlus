@@ -7,6 +7,9 @@ import me.pulsi_.bankplus.utils.BPLogger;
 import me.pulsi_.bankplus.values.ConfigValues;
 import org.bukkit.OfflinePlayer;
 
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import java.io.IOException;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -151,14 +154,14 @@ public class BPSQL {
     }
 
     /**
-     * Set the debt of the specified player in the specified bank to the selected amount.
+     * Set the bank level of the specified player in the specified bank.
      *
      * @param player   The player.
      * @param bankName The bank.
-     * @param newValue The new value for the money.
+     * @param newValue The new value.
      */
-    public static void setBankLevel(OfflinePlayer player, String bankName, BigDecimal newValue) {
-        set(player, bankName, SQLSearch.INTEREST, newValue.toPlainString());
+    public static void setBankLevel(OfflinePlayer player, String bankName, int newValue) {
+        set(player, bankName, SQLSearch.BANK_LEVEL, String.valueOf(newValue));
     }
 
     /**
@@ -169,7 +172,7 @@ public class BPSQL {
      * @param newValue The new value for the money.
      */
     public static void setDebt(OfflinePlayer player, String bankName, BigDecimal newValue) {
-        set(player, bankName, SQLSearch.INTEREST, newValue.toPlainString());
+        set(player, bankName, SQLSearch.DEBT, newValue.toPlainString());
     }
 
     /**
@@ -202,6 +205,32 @@ public class BPSQL {
      * @param bankEconomy The economy of the bank.
      */
     public static void savePlayer(OfflinePlayer player, BPEconomy bankEconomy) {
+        if (ConfigValues.isUseFiles()) {
+            String bankName = bankEconomy.getOriginBank().getIdentifier();
+            int level = bankEconomy.getBankLevel(player);
+            String debt = bankEconomy.getDebt(player).toPlainString();
+            String money = bankEconomy.getBankBalance(player).toPlainString();
+
+            String identifier = (ConfigValues.isStoringUUIDs() ? player.getUniqueId().toString() : player.getName());
+            if (identifier == null) return;
+            File file = new File(BankPlus.INSTANCE().getDataFolder(), "playerdata" + File.separator + identifier + ".yml");
+            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException ignored) {}
+            }
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            config.set("name", player.getName());
+            config.set("banks." + bankName + ".level", level);
+            config.set("banks." + bankName + ".debt", debt);
+            config.set("banks." + bankName + ".money", money);
+            try {
+                config.save(file);
+            } catch (IOException ignored) {}
+            return;
+        }
+
         String bankName = bankEconomy.getOriginBank().getIdentifier();
 
         int level = bankEconomy.getBankLevel(player);
@@ -231,6 +260,13 @@ public class BPSQL {
      * @return true if a record with its uuid exists, false otherwise.
      */
     public static boolean isRegistered(OfflinePlayer player, String bankName) {
+        if (ConfigValues.isUseFiles()) {
+            String identifier = (ConfigValues.isStoringUUIDs() ? player.getUniqueId().toString() : player.getName());
+            if (identifier == null) return false;
+            File file = new File(BankPlus.INSTANCE().getDataFolder(), "playerdata" + File.separator + identifier + ".yml");
+            return file.exists();
+        }
+
         try {
             ResultSet set = connection.prepareStatement("SELECT 1 FROM " + bankName + " WHERE uuid='" + player.getUniqueId() + "' LIMIT 1").executeQuery();
             return set.next();
@@ -248,6 +284,27 @@ public class BPSQL {
      * @param player The player to register.
      */
     public static void fillRecords(OfflinePlayer player) {
+        if (ConfigValues.isUseFiles()) {
+            String identifier = (ConfigValues.isStoringUUIDs() ? player.getUniqueId().toString() : player.getName());
+            if (identifier == null) return;
+            File file = new File(BankPlus.INSTANCE().getDataFolder(), "playerdata" + File.separator + identifier + ".yml");
+            if (file.exists()) return;
+            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+            try {
+                file.createNewFile();
+                FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+                config.set("name", player.getName());
+                for (String bank : BPEconomy.nameList()) {
+                    config.set("banks." + bank + ".level", 1);
+                    config.set("banks." + bank + ".debt", "0");
+                    config.set("banks." + bank + ".money", ConfigValues.getMainGuiName().equals(bank) ? ConfigValues.getStartAmount().toPlainString() : "0");
+                    config.set("banks." + bank + ".interest", "0");
+                }
+                config.save(file);
+            } catch (IOException ignored) {}
+            return;
+        }
+
         if (ConfigValues.isMySqlEnabled())
             for (String bank : BPEconomy.nameList()) {
                 try {
@@ -340,6 +397,23 @@ public class BPSQL {
      * @return A string representing the bank level, debt, interest or money value.
      */
     private static String get(OfflinePlayer player, String bankName, SQLSearch search) {
+        if (ConfigValues.isUseFiles()) {
+            String identifier = (ConfigValues.isStoringUUIDs() ? player.getUniqueId().toString() : player.getName());
+            if (identifier == null) return "";
+            File file = new File(BankPlus.INSTANCE().getDataFolder(), "playerdata" + File.separator + identifier + ".yml");
+            if (!file.exists()) return "";
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            String columnName;
+            switch (search) {
+                case BANK_LEVEL -> columnName = "level";
+                case DEBT -> columnName = "debt";
+                case INTEREST -> columnName = "interest";
+                case MONEY -> columnName = "money";
+                default -> { return ""; }
+            }
+            return config.getString("banks." + bankName + "." + columnName, "");
+        }
+
         String columnName;
         switch (search) {
             case BANK_LEVEL -> columnName = "bank_level";
@@ -380,6 +454,33 @@ public class BPSQL {
      * @param newValue The new value.
      */
     private static void set(OfflinePlayer player, String bankName, SQLSearch search, String newValue) {
+        if (ConfigValues.isUseFiles()) {
+            String identifier = (ConfigValues.isStoringUUIDs() ? player.getUniqueId().toString() : player.getName());
+            if (identifier == null) return;
+            File file = new File(BankPlus.INSTANCE().getDataFolder(), "playerdata" + File.separator + identifier + ".yml");
+            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException ignored) {}
+            }
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            config.set("name", player.getName());
+            String columnName;
+            switch (search) {
+                case BANK_LEVEL -> columnName = "level";
+                case DEBT -> columnName = "debt";
+                case INTEREST -> columnName = "interest";
+                case MONEY -> columnName = "money";
+                default -> { return; }
+            }
+            config.set("banks." + bankName + "." + columnName, newValue);
+            try {
+                config.save(file);
+            } catch (IOException ignored) {}
+            return;
+        }
+
         String columnName;
         switch (search) {
             case BANK_LEVEL -> columnName = "bank_level";

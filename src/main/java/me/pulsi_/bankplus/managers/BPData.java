@@ -97,8 +97,10 @@ public class BPData {
             BankRegistry.loadBanks();
 
             BPSQL.disconnect();
-            if (ConfigValues.isMySqlEnabled()) BPSQL.MySQL.connect();
-            else BPSQL.SQLite.connect();
+            if (!ConfigValues.isUseFiles()) {
+                if (ConfigValues.isMySqlEnabled()) BPSQL.MySQL.connect();
+                else BPSQL.SQLite.connect();
+            }
 
             // Do this check to avoid restarting the saving interval if another one is finishing.
             if (!BPTaskManager.contains(BPTaskManager.MONEY_SAVING_TASK)) EconomyUtils.restartSavingInterval();

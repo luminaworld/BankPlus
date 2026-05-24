@@ -31,7 +31,7 @@ repositories {
 
 // group:artifact:version
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:26.1.2.build.65-stable")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.6")
     implementation(
@@ -51,7 +51,7 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.46.0.0")
 }
 
-val targetJavaVersion = 21
+val targetJavaVersion = 25
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
