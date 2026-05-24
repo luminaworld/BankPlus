@@ -11,4 +11,9 @@ public class PlayerChatLow implements Listener {
     public void onChat(AsyncChatEvent e) {
         PlayerChatMethod.process(e);
     }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onLegacyChat(org.bukkit.event.player.AsyncPlayerChatEvent e) {
+        PlayerChatMethod.process(e);
+    }
 }

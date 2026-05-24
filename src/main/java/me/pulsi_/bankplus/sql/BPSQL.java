@@ -67,12 +67,12 @@ public class BPSQL {
      * @return The argument based on the specified player.
      */
     public static String GET_DEFAULT_PLAYER_ARGUMENTS(OfflinePlayer p, String bankName) {
-        return p.getUniqueId() + "," +
-                p.getName() + "," +
-                "1," +
-                (ConfigValues.getMainGuiName().equals(bankName) ? ConfigValues.getStartAmount() : "0") + "," +
-                "0," +
-                "0";
+        return "'" + p.getUniqueId() + "'," +
+                "'" + p.getName() + "'," +
+                "'1'," +
+                "'" + (ConfigValues.getMainGuiName().equals(bankName) ? ConfigValues.getStartAmount().toPlainString() : "0") + "'," +
+                "'0'," +
+                "'0'";
     }
 
     private static Connection connection;
@@ -237,17 +237,17 @@ public class BPSQL {
         String debt = bankEconomy.getDebt(player).toPlainString();
         String money = bankEconomy.getBankBalance(player).toPlainString();
 
-        String insert = "INSERT INTO " + bankName + " (uuid, bank_level, debt, money) " + "VALUES(" +
-                player.getUniqueId() + ", " + level + ", " + debt + ", " + money + ")";
+        String insert = "INSERT INTO " + bankName + " (uuid, bank_level, debt, money) VALUES('" +
+                player.getUniqueId() + "', '" + level + "', '" + debt + "', '" + money + "')";
 
-        String set = "bank_level='" + level + "', " + "debt='" + debt + "', " + "money='" + money + "'";
+        String set = "bank_level='" + level + "', debt='" + debt + "', money='" + money + "'";
 
         String query;
         if (ConfigValues.isMySqlEnabled()) query = insert + " ON DUPLICATE KEY UPDATE " + set;
         else query = insert + " ON CONFLICT(uuid) DO UPDATE SET " + set;
 
-        try {
-            connection.prepareStatement(query).executeUpdate();
+        try (java.sql.PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.executeUpdate();
         } catch (SQLException e) {
             BPLogger.Console.error(e, "Cannot save player " + player.getName() + " in bank " + bankName + ".");
         }
@@ -267,8 +267,8 @@ public class BPSQL {
             return file.exists();
         }
 
-        try {
-            ResultSet set = connection.prepareStatement("SELECT 1 FROM " + bankName + " WHERE uuid='" + player.getUniqueId() + "' LIMIT 1").executeQuery();
+        try (java.sql.PreparedStatement ps = connection.prepareStatement("SELECT 1 FROM " + bankName + " WHERE uuid='" + player.getUniqueId() + "' LIMIT 1");
+             ResultSet set = ps.executeQuery()) {
             return set.next();
         } catch (SQLException e) {
             BPLogger.Console.error(e, "Cannot check if player " + player.getName() + " is registered in the bank " + bankName + ".");
@@ -429,15 +429,12 @@ public class BPSQL {
 
         String query = "SELECT " + columnName + " FROM " + bankName + " WHERE uuid='" + player.getUniqueId() + "'";
 
-        ResultSet set;
-        try {
-            set = connection.prepareStatement(query).executeQuery();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            return set.getString(columnName);
+        try (java.sql.PreparedStatement ps = connection.prepareStatement(query);
+             ResultSet set = ps.executeQuery()) {
+            if (set.next()) {
+                return set.getString(columnName);
+            }
+            return "";
         } catch (SQLException e) {
             BPLogger.Console.error(e, "Could not get data for player " + player.getName() + ".");
             return "";
@@ -496,13 +493,13 @@ public class BPSQL {
 
         String query;
 
-        String insert = "INSERT INTO " + bankName + " (uuid, " + columnName + ") VALUES(" + player.getUniqueId() + ", " + newValue + ")";
+        String insert = "INSERT INTO " + bankName + " (uuid, " + columnName + ") VALUES('" + player.getUniqueId() + "', '" + newValue + "')";
         String set = columnName + "='" + newValue + "'";
         if (ConfigValues.isMySqlEnabled()) query = insert + " ON DUPLICATE KEY UPDATE " + set;
         else query = insert + " ON CONFLICT(uuid) DO UPDATE SET " + set;
 
-        try {
-            connection.prepareStatement(query).executeUpdate();
+        try (java.sql.PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.executeUpdate();
         } catch (SQLException e) {
             BPLogger.Console.error(e, "Cannot set " + columnName + " for player " + player.getName() + " in bank " + bankName + ".");
         }

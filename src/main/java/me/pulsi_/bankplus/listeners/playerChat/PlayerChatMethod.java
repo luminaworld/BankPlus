@@ -18,6 +18,8 @@ import java.math.BigDecimal;
 
 public class PlayerChatMethod {
 
+    private static final java.util.Set<java.util.UUID> processedThisTick = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
     public static void process(AsyncChatEvent e) {
         Player p = e.getPlayer();
         BPPlayer bpPlayer = PlayerRegistry.get(p);
@@ -27,6 +29,10 @@ public class PlayerChatMethod {
         e.setCancelled(true);
         e.viewers().clear(); // Try stopping chat plugins from still sending the message.
 
+        if (processedThisTick.contains(p.getUniqueId())) return;
+        processedThisTick.add(p.getUniqueId());
+        Bukkit.getScheduler().runTask(BankPlus.INSTANCE(), () -> processedThisTick.remove(p.getUniqueId()));
+
         Bank openedBank = bpPlayer.getOpenedBank();
         if (openedBank == null) {
             removeFromTyping(bpPlayer);
@@ -35,6 +41,51 @@ public class PlayerChatMethod {
 
         MiniMessage mm = MiniMessage.miniMessage();
         String text = mm.serialize(e.message());
+        // If some chat format plugin is adding a "." at the end, remove it.
+        if (text.endsWith(".")) text = text.substring(0, text.length() - 1);
+
+        if (hasTypedExit(text, p)) reopenBank(bpPlayer, openedBank.getBankGui());
+        else {
+            BigDecimal amount;
+            try {
+                amount = new BigDecimal(text);
+            } catch (NumberFormatException ex) {
+                BPMessages.sendIdentifier(p, "Invalid-Number");
+                return;
+            }
+
+            BPEconomy economy = openedBank.getBankEconomy();
+            if (bpPlayer.isDepositing()) economy.deposit(p, amount);
+            else economy.withdraw(p, amount);
+
+            reopenBank(bpPlayer, openedBank.getBankGui());
+        }
+    }
+
+    public static void process(org.bukkit.event.player.AsyncPlayerChatEvent e) {
+        Player p = e.getPlayer();
+        BPPlayer bpPlayer = PlayerRegistry.get(p);
+        if (bpPlayer == null) return;
+
+        if (!bpPlayer.isDepositing() && !bpPlayer.isWithdrawing()) return;
+        e.setCancelled(true);
+        try {
+            e.getRecipients().clear();
+        } catch (UnsupportedOperationException ex) {
+            // Ignore in case recipients list is unmodifiable
+        }
+
+        if (processedThisTick.contains(p.getUniqueId())) return;
+        processedThisTick.add(p.getUniqueId());
+        Bukkit.getScheduler().runTask(BankPlus.INSTANCE(), () -> processedThisTick.remove(p.getUniqueId()));
+
+        Bank openedBank = bpPlayer.getOpenedBank();
+        if (openedBank == null) {
+            removeFromTyping(bpPlayer);
+            return;
+        }
+
+        String text = e.getMessage();
         // If some chat format plugin is adding a "." at the end, remove it.
         if (text.endsWith(".")) text = text.substring(0, text.length() - 1);
 

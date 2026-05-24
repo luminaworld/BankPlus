@@ -11,4 +11,9 @@ public class PlayerChatHighest implements Listener {
     public void onChat(AsyncChatEvent e) {
         PlayerChatMethod.process(e);
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onLegacyChat(org.bukkit.event.player.AsyncPlayerChatEvent e) {
+        PlayerChatMethod.process(e);
+    }
 }
