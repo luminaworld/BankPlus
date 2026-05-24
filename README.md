@@ -1,64 +1,89 @@
-![image](https://github.com/user-attachments/assets/e82096e0-b55a-423b-baf6-8adf16bf2cdf)
+# LuminaBankPlus
 
-After years of modelling, improving and adding suggestions, this is what bankplus became today, the best bank plugin on the market ever made, full of features, fully customizable with the most efficient code possible.
+LuminaBankPlus เป็นปลั๊กอินระบบธนาคารสำหรับเซิร์ฟเวอร์ Minecraft ที่มีความยืดหยุ่นสูง มีประสิทธิภาพในการทำงานสูง และสามารถปรับแต่งได้เองอย่างสมบูรณ์แบบผ่านระบบเมนู GUI ในตัว รองรับระบบหลายธนาคาร ระบบดอกเบี้ย และระบบกู้ยืมเงินอย่างครบวงจร
 
-[![image](https://github.com/user-attachments/assets/58e41212-d98e-41bd-9bdf-081d5549330d)](https://discord.gg/tanHjMv7hY)
+---
 
-Support will be only given on discord.
-Do not use the review section to report bugs, ask questions or leave suggestions.
+## คุณสมบัติเด่นของระบบ
 
-# **Plugin requirements**
-1. Vault (Economy Hook)
-2. Economy Plugin (For example EssentialsX or one of the listed plugins on the Vault page)
+*   **ระบบ GUI แบบกำหนดเอง (Built-in GUI)**: สามารถปรับแต่งปุ่ม ไอเทม ลอร์ (Lore) และกำหนดค่าการกระทำ (Actions) ของผู้เล่นในหน้าต่างเมนูได้อย่างอิสระ รวมถึงการรองรับ Custom Model Data
+*   **ระบบธนาคารไม่จำกัดจำนวน (Multiple Banks)**: สามารถสร้างธนาคารที่มีการจำกัดความจุ ระดับการอัปเกรด และเงื่อนไขการใช้งานที่แตกต่างกันได้อย่างไม่จำกัด
+*   **ระบบดอกเบี้ยอัจฉริยะ (Dynamic Interest)**: รองรับการจ่ายดอกเบี้ยทั้งขณะที่ผู้เล่นออนไลน์ (Online) และออฟไลน์ (Offline) พร้อมระบบจำกัดปริมาณดอกเบี้ยสูงสุด ระบบป้องกันการฟาร์มด้วยสถานะ AFK และระบบคำนวณดอกเบี้ยแบบเป็นขั้นบันไดตามเงินฝาก (Interest Limiter)
+*   **ระบบเงินกู้และหนี้สิน (Loans & Debts)**: ผู้เล่นสามารถกู้ยืมเงินจากธนาคารโดยกำหนดจำนวนงวดและดอกเบี้ยในการผ่อนชำระได้ หากผู้เล่นไม่มีเงินคืนระบบจะบันทึกเป็นหนี้สินและหักจากเงินฝากโดยอัตโนมัติ
+*   **ทางเลือกจัดเก็บข้อมูลที่หลากหลาย (Data Storage Options)**: เลือกเก็บข้อมูลผู้เล่นได้ 3 รูปแบบ ได้แก่ ไฟล์เดี่ยว (YML), ฐานข้อมูลในตัว (SQLite) หรือฐานข้อมูลเซิร์ฟเวอร์ภายนอก (MySQL)
+*   **ตารางอันดับเศรษฐี (BankTop Leaderboard)**: ระบบจัดอันดับผู้เล่นที่มียอดเงินฝากในธนาคารสูงที่สุดในรูปแบบข้อความบนแชท
+*   **ระบบตรวจสอบความปลอดภัย**: มีการบันทึกประวัติธุรกรรม (Transaction Logs) ของผู้เล่นเพื่อใช้ในการตรวจสอบย้อนหลังเมื่อเกิดปัญหา
 
-_Without these 2 requirements, BankPlus won't start._
+---
 
+## สิ่งจำเป็นในการติดตั้งและใช้งาน
 
-# **Plugin optional requirements**
-1. PlaceholderAPI (Displays placeholders in the gui and shows BankPlus placeholders)
+### สิ่งจำเป็นพื้นฐาน (ยื่นขอไม่ทำงานหากไม่มีสิ่งเหล่านี้)
+1.  **Vault**: ปลั๊กอินสำหรับเชื่อมต่อระบบเศรษฐกิจหลักของเซิร์ฟเวอร์
+2.  **EssentialsX หรือปลั๊กอินระบบเศรษฐกิจอื่นๆ**: ปลั๊กอินจัดการเงินหลักของเซิร์ฟเวอร์ที่รองรับโดย Vault
 
+### สิ่งจำเป็นทางเลือก (เสริมประสิทธิภาพ)
+1.  **PlaceholderAPI**: ใช้แสดงค่าสถิติต่างๆ ในรูปแบบตัวแปรในหน้าเมนู GUI และส่วนอื่นๆ ของเซิร์ฟเวอร์
 
-![image](https://github.com/user-attachments/assets/bda13791-8355-44be-8e1a-4f55adb4da60)
+---
 
-- Built-in GUI system.
-- Unlimited amount of banks.
-- MySQL support.
-- GUI with custom heads & custom model data items support.
-- Interest system, both online and offline.
-- Actions followed by sound effects.
-- Various ways to deposit / withdraw money.
-- BankTop fully customizable.
-- Bank upgrades with cost and custom items.
-- Transtaction taxes.
-- Loan system with debts.
-- Efficient code, every resource is used with efficiecy and lightweight in mind.
-- Complete wiki.
-- Much much more..
-- If you want to test the plugin, you can join on our test server pulsi.jifercraft.com that is hosted thanks to jainagam3r45's JiferCraft studios!
+## รายการคำสั่งและสิทธิ์การใช้งาน (Commands & Permissions)
 
-Make sure to check the [wiki](https://github.com/Pulsih/BankPlus/wiki)!
+คำสั่งหลักของระบบคือ `/bankplus` (สามารถใช้คำสั่งย่อ: `/bank`, `/bankp`, `/bp`)
 
+### คำสั่งสำหรับผู้เล่นทั่วไป
 
-# Plugin Gallery
-Images
+| คำสั่ง | คำอธิบาย | สิทธิ์ในการใช้งาน (Permission) |
+| :--- | :--- | :--- |
+| `/bank` | เปิดหน้าต่างเมนูหลักของธนาคาร | `bankplus.use` (ขึ้นอยู่กับการตั้งค่า) |
+| `/bank help` | แสดงข้อความช่วยเหลือและคำสั่งทั้งหมด | ไม่ต้องการสิทธิ์ |
+| `/bank deposit <จำนวน>` | ฝากเงินเข้าธนาคารหลัก (ระบุจำนวน / % / ALL) | `bankplus.deposit` |
+| `/bank withdraw <จำนวน>` | ถอนเงินออกจากธนาคารหลัก (ระบุจำนวน / % / ALL) | `bankplus.withdraw` |
+| `/bank upgrade` | อัปเกรดระดับธนาคารเพื่อเพิ่มความจุและอัตราดอกเบี้ย | `bankplus.upgrade` |
+| `/bank pay <ชื่อผู้เล่น> <จำนวน>` | โอนเงินในบัญชีธนาคารให้ผู้เล่นคนอื่น | `bankplus.pay` |
+| `/bank interest` | ดูเวลาที่เหลือและอัตราดอกเบี้ยที่จะได้รับในรอบถัดไป | `bankplus.interest` |
+| `/banktop` | แสดงรายชื่อผู้เล่นที่มียอดเงินในธนาคารสูงสุด 10 อันดับแรก | `bankplus.banktop` |
 
-Bank gui fully costumizable
-![image](https://github.com/user-attachments/assets/514e4c63-3de4-4264-8626-57970642e6fd)
+### คำสั่งสำหรับผู้ดูแลระบบ (Admin Commands)
 
-Bank upgrades
-![image](https://github.com/user-attachments/assets/d69b019c-5986-4a2f-9b8d-c964f30a7a43)
+| คำสั่ง | คำอธิบาย | สิทธิ์ในการใช้งาน (Permission) |
+| :--- | :--- | :--- |
+| `/bank reload` | รีโหลดไฟล์ตั้งค่าของปลั๊กอินทั้งหมด | `bankplus.reload` |
+| `/bank add <ชื่อผู้เล่น> <จำนวน> [ธนาคาร]` | เพิ่มเงินฝากให้กับผู้เล่น | `bankplus.add` |
+| `/bank remove <ชื่อผู้เล่น> <จำนวน> [ธนาคาร]` | หักเงินฝากของผู้เล่นออก | `bankplus.remove` |
+| `/bank set <ชื่อผู้เล่น> <จำนวน> [ธนาคาร]` | กำหนดจำนวนเงินฝากของผู้เล่นโดยตรง | `bankplus.set` |
+| `/bank setLevel <ชื่อผู้เล่น> <ระดับ> [ธนาคาร]` | กำหนดระดับเลเวลของธนาคารให้ผู้เล่น | `bankplus.setlevel` |
+| `/bank forceDeposit <ชื่อผู้เล่น> <จำนวน>` | บังคับให้ผู้เล่นฝากเงินจากตัวเข้าธนาคาร | `bankplus.forcedeposit` |
+| `/bank forceWithdraw <ชื่อผู้เล่น> <จำนวน>` | บังคับให้ผู้เล่นถอนเงินจากธนาคารเข้าตัว | `bankplus.forcewithdraw` |
+| `/bank forceUpgrade <ชื่อผู้เล่น> [ธนาคาร]` | บังคับอัปเกรดธนาคารให้ผู้เล่นโดยไม่เสียเงิน | `bankplus.forceupgrade` |
+| `/bank view <ชื่อผู้เล่น>` | เปิดดูสมุดบัญชีเงินฝากของผู้เล่นอื่น | `bankplus.view` |
+| `/bank migrate <filesToDatabase/databaseToFiles>` | ย้ายฐานข้อมูลจากรูปแบบไฟล์ไปฐานข้อมูล หรือในทางกลับกัน | `bankplus.migrate` |
+| `/bank giveRequiredItems <ไอเทม>` | มอบไอเทมเฉพาะสำหรับใช้ในการอัปเกรดธนาคาร | `bankplus.giverequireditems` |
+| `/bank debug` | แสดงข้อมูลดีบักการทำงานของปลั๊กอิน | `bankplus.debug` |
 
-Various ways to deposit / withdraw
-![image](https://github.com/user-attachments/assets/6cd60d4a-dea6-4b77-917e-dbde2206799e)
-![image](https://github.com/user-attachments/assets/c8b58f42-f7bc-47d4-85da-50cc2308b90c)
+### สิทธิ์การใช้งานเพิ่มเติมที่สำคัญ
+*   `bankplus.receive.interest` : อนุญาตให้ผู้เล่นได้รับดอกเบี้ยเงินฝาก
+*   `bankplus.deposit.bypass-taxes` : ยกเว้นการหักภาษีในเวลาฝากเงิน
+*   `bankplus.withdraw.bypass-taxes` : ยกเว้นการหักภาษีในเวลาถอนเงิน
 
+---
 
-Online and offline interest
-![image](https://github.com/user-attachments/assets/22704596-9b99-4617-8d8e-85cd39c8aac3)
-![image](https://github.com/user-attachments/assets/69231e0b-2d94-4e3a-965d-2632efbc44cb)
+## คู่มือการกำหนดค่าระบบเบื้องต้น
 
+การตั้งค่าและปรับเปลี่ยนระบบจะกระทำผ่านไฟล์ `config.yml` และไฟล์ในโฟลเดอร์ `banks/`
 
-And many other features that you will discover only using the plugin!
+### 1. ระบบจัดเก็บข้อมูล (Data Storage)
+ในไฟล์ `config.yml` คุณสามารถเลือกรูปแบบการจัดเก็บข้อมูลผ่านหัวข้อ `Save-Playerdata-Type`:
+*   `YML` : เหมาะสำหรับเซิร์ฟเวอร์ขนาดเล็ก บันทึกแยกไฟล์ตาม UUID ของผู้เล่นในโฟลเดอร์ `playerdata/`
+*   `SQLite` : รูปแบบเริ่มต้น บันทึกข้อมูลรวดเร็วลงในไฟล์เดียว (`data.db`) เหมาะสำหรับเซิร์ฟเวอร์ทั่วไป
+*   `MySQL` : เหมาะสำหรับเครือข่ายเซิร์ฟเวอร์หลายเครื่อง (BungeeCord/Velocity) ที่ต้องการซิงค์ข้อมูลร่วมกัน
 
-# Videos
-[![VideoImage](http://img.youtube.com/vi/_iA5vi1dHss/0.jpg)](https://youtu.be/_iA5vi1dHss)
+### 2. ระบบดอกเบี้ย (Interest Settings)
+*   **Delay**: ตั้งค่าคูลดาวน์ในการแจกจ่ายดอกเบี้ย (เช่น `"5 m"` คือทุก 5 นาที หรือ `"1 h"` คือทุก 1 ชั่วโมง)
+*   **Give-To-Offline-Players**: หากตั้งค่าเป็น `true` ผู้เล่นที่ไม่ได้ออนไลน์ก็จะได้รับดอกเบี้ยเช่นกัน
+*   **Offline-Limit**: จำกัดเวลาสูงสุดที่ผู้เล่นออฟไลน์จะได้รับดอกเบี้ยต่อเนื่อง (เช่น `"3 d"` คือหลังออฟไลน์ไป 3 วันจะหยุดจ่ายดอกเบี้ยชั่วคราว)
+*   **AFK-Settings**: สามารถเลือกที่จะหยุดจ่ายดอกเบี้ย หรือลดอัตราดอกเบี้ยลงหากผู้เล่นถูกระบบตรวจจับว่ากำลังยืนนิ่งเฉย (AFK)
+
+### 3. ระบบภาษีและข้อจำกัด (Taxes and Limits)
+*   **Deposit-Taxes / Withdraw-Taxes**: กำหนดเปอร์เซ็นต์ที่จะหักออกเป็นค่าธรรมเนียม/ภาษีเมื่อฝากหรือถอนเงิน (เช่น `"2%"` จะหักเงิน 2% ของยอดธุรกรรม)
+*   **Max-Deposit-Amount / Max-Withdraw-Amount**: กำหนดวงเงินสูงสุดที่สามารถกระทำธุรกรรมได้ต่อครั้ง เพื่อใช้ในการสร้างสมดุลทางเศรษฐกิจของเซิร์ฟเวอร์
