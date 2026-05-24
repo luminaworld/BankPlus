@@ -178,16 +178,30 @@ public final class BankPlus extends JavaPlugin {
     }
 
     private boolean isPluginUpdated() {
-        String newVersion = getDescription().getVersion();
+        String currentVersion = getDescription().getVersion();
+        String newVersion = currentVersion;
         boolean updated = true;
         try {
-            newVersion = new BufferedReader(new InputStreamReader(
-                    URI.create("https://api.spigotmc.org/legacy/update.php?resource=93130").toURL().openConnection().getInputStream()
-            )).readLine();
+            java.net.HttpURLConnection connection = (java.net.HttpURLConnection) URI.create("https://api.github.com/repos/luminaworld/BankPlus/releases/latest").toURL().openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
 
-            updated = actualVersion.equals(newVersion);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("\"tag_name\":")) {
+                        newVersion = line.split(":")[1].replace("\"", "").replace(",", "").trim();
+                        if (newVersion.startsWith("v")) newVersion = newVersion.substring(1);
+                        break;
+                    }
+                }
+            }
+
+            updated = currentVersion.equalsIgnoreCase(newVersion);
         } catch (Exception e) {
-            BPLogger.Console.warn("Could not check for updates. (No internet connection)");
+            BPLogger.Console.warn("Could not check for updates on GitHub. (No internet connection or API limit reached)");
         }
 
         if (isAlphaVersion() && !ConfigValues.isSilentInfoMessages())
@@ -199,7 +213,7 @@ public final class BankPlus extends JavaPlugin {
             // Even if the info is disabled, notify when there is a new update
             // because it is important to keep users at the latest version.
             BPLogger.Console.info("New version of the plugin available! (v" + newVersion + ").");
-            BPLogger.Console.info("Please download the latest version here: https://www.spigotmc.org/resources/%E2%9C%A8-bankplus-%E2%9C%A8.93130/.");
+            BPLogger.Console.info("Please download the latest version here: https://github.com/luminaworld/BankPlus/releases/latest");
         }
         return updated;
     }
